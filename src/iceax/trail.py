@@ -99,7 +99,7 @@ class Trail:
         '''
         if type(outlier) != bool:
             raise TypeError('"outlier" must be boolean.')
-        x = self.__quantile()
+        x = self.__quantile(self.series)
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(111)
         sns.boxplot(x=x, color='steelblue', showfliers=False, ax=ax)
@@ -111,18 +111,19 @@ class Trail:
         ax.set_title(self.name)
         return fig
 
-    def __quantile(self) -> List[float]:
+    @staticmethod
+    def __quantile(series: pd.Series) -> List[float]:
         '''箱ひげ図出力用に対象の量的変数の統計量を出力
 
         Returns:
             List[float]: 四分位点の値が格納されたリスト
         '''
-        if self.series.dtype not in ('int', 'float'):
-            raise TypeError('self.series is not quantitative.')
+        if series.dtype not in ('int', 'float'):
+            raise TypeError('series is not quantitative.')
         q = [0.25, 0.5, 0.75]
-        quant = self.series.quantile(q)
-        s_min = self.series.min()
-        s_max = self.series.max()
+        quant = series.quantile(q)
+        s_min = series.min()
+        s_max = series.max()
         s_range = abs(quant[0.75] - quant[0.25]) * 1.5
         min_whis = quant[0.25] - s_range
         min_whis = min_whis if min_whis > s_min else s_min

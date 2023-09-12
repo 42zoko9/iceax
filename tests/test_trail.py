@@ -152,16 +152,16 @@ class TestQuantile:
         invalid_df = pd.DataFrame({'tmp': [True, True, False]})
         t = Trail(invalid_df, 'tmp')
         with pytest.raises(TypeError) as e:
-            t._Trail__quantile()
+            t._Trail__quantile(t.series)
         err_msg = e.value.args[0]
-        assert err_msg == 'self.series is not quantitative.'
+        assert err_msg == 'series is not quantitative.'
 
     def test_valid(self, valid_input_boxplot) -> None:
         '''正常系: 想定通りに出力される
         '''
         valid_result = [0., 0., 3., 7., 11.]
         t = Trail(valid_input_boxplot, 'tmp')
-        result = t._Trail__quantile()
+        result = t._Trail__quantile(t.series)
         assert result == valid_result
 
 
